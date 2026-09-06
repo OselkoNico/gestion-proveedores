@@ -94,35 +94,6 @@
     color: #60788a;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 60px;
-    margin: -50px -30px 50px;
-    background: #dcecf7;
-    border-bottom: 1px solid #c4ddeb;
-}
-
-.titulo {
-    margin: 0;
-    color: #285b7a;
-    font-size: 26px;
-}
-
-.navegacion {
-    display: flex;
-    gap: 10px;
-}
-
-.nav-enlace {
-    padding: 10px 16px;
-    color: #285b7a;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: 0.2s;
-}
-
 .nav-enlace:hover {
     background: #c7dfed;
 }
@@ -134,4 +105,21 @@
     border-radius: 4px;
     padding: 0.6rem 0.8rem;
     margin: 0.5rem 0;
+}
+
+.buscador {
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #d4e5ef;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.buscador:focus {
+    border-color: #7bb3d1;
+    outline: none;
 }

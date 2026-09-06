@@ -1,75 +1,78 @@
 <div class="proveedores-container">
 
-    <header class="header">
-        <h1 class="titulo">Gestión de Proveedores</h1>
-
-        <nav class="navegacion">
-            <a class="nav-enlace" routerLink="/">
-                Inicio
-            </a>
-
-            <a class="nav-enlace" routerLink="/crear">
-                Añadir
-            </a>
-
-            <a class="nav-enlace" routerLink="/proveedores">
-                Modificar / eliminar
-            </a>
-        </nav>
-    </header>
-
     <main>
 
         @if (error()) {
             <p class="mensaje-error">{{ error() }}</p>
         }
 
-        @if (proveedores().length > 0) {
+        @if (cargando()) {
 
-            <table class="tabla-proveedores">
-                <thead>
-                    <tr>
-                        <th>CIF</th>
-                        <th>Nombre de empresa</th>
-                        <th>Actividad</th>
-                        <th>Dirección</th>
-                        <th>Ciudad</th>
-                        <th>Código postal</th>
-                        <th>Teléfono</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
+            <p class="mensaje-cargando">Cargando proveedores...</p>
 
-                <tbody>
-                    @for (proveedor of proveedores(); track proveedor.cif) {
+        } @else if (proveedores().length > 0) {
+
+            <input
+                class="buscador"
+                type="text"
+                placeholder="Buscar por nombre o CIF"
+                [(ngModel)]="busqueda">
+
+            @if (proveedoresFiltrados().length > 0) {
+
+                <table class="tabla-proveedores">
+                    <thead>
                         <tr>
-                            <td>{{ proveedor.cif }}</td>
-                            <td>{{ proveedor.name }}</td>
-                            <td>{{ proveedor.activity }}</td>
-                            <td>{{ proveedor.address }}</td>
-                            <td>{{ proveedor.city }}</td>
-                            <td>{{ proveedor.postalCode }}</td>
-                            <td>{{ proveedor.phone }}</td>
-
-                            <td>
-                                <button
-                                    class="btn btn-modificar"
-                                    (click)="modificarProveedor(proveedor.cif)">
-                                    Modificar
-                                </button>
-
-                                <button
-                                    class="btn btn-eliminar"
-                                    (click)="eliminarProveedor(proveedor.cif)">
-                                    Eliminar
-                                </button>
-                            </td>
+                            <th>CIF</th>
+                            <th>Nombre de empresa</th>
+                            <th>Actividad</th>
+                            <th>Dirección</th>
+                            <th>Ciudad</th>
+                            <th>Código postal</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
 
-        } @else {
+                    <tbody>
+                        @for (proveedor of proveedoresFiltrados(); track proveedor.cif) {
+                            <tr>
+                                <td>{{ proveedor.cif }}</td>
+                                <td>{{ proveedor.name }}</td>
+                                <td>{{ proveedor.activity }}</td>
+                                <td>{{ proveedor.address }}</td>
+                                <td>{{ proveedor.city }}</td>
+                                <td>{{ proveedor.postalCode }}</td>
+                                <td>{{ proveedor.phone }}</td>
+
+                                <td>
+                                    <button
+                                        class="btn btn-modificar"
+                                        (click)="modificarProveedor(proveedor.cif)">
+                                        Modificar
+                                    </button>
+
+                                    <button
+                                        class="btn btn-eliminar"
+                                        (click)="eliminarProveedor(proveedor.cif)">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            } @else {
+
+                <div class="sin-proveedores">
+                    <h2>Sin resultados</h2>
+                    <p>Ningún proveedor coincide con «{{ busqueda() }}».</p>
+                </div>
+
+            }
+
+        } @else if (!error()) {
 
             <div class="sin-proveedores">
                 <h2>No hay proveedores</h2>
