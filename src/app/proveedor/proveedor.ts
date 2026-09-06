@@ -1,11 +1,11 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProveedoresService } from '../proveedores';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-proveedor',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule],
   templateUrl: './proveedor.html',
   styleUrl: './proveedor.css',
 })
@@ -13,6 +13,7 @@ export class ProveedorComponent implements OnInit{
   formFormulario!: FormGroup;
   esModificacion = signal(false);
   error = signal('');
+  guardando = signal(false);
 
   constructor(
     private proveedoresService: ProveedoresService, 
@@ -23,11 +24,11 @@ export class ProveedorComponent implements OnInit{
   guardar() {
     if (this.formFormulario.invalid) {
       this.formFormulario.markAllAsTouched();
-      this.error.set('El CIF y el nombre de la empresa son obligatorios.');
       return;
     }
 
     this.error.set('');
+    this.guardando.set(true);
     this.esModificacion() ? this.updateProvider() : this.createProvider();
   }
 
@@ -36,10 +37,11 @@ export class ProveedorComponent implements OnInit{
 
     this.proveedoresService.createProvider(proveedor).subscribe({
       next: () => this.router.navigate(['/proveedores']),
-      error: (respuesta) => this.error.set(
-        respuesta.error?.message ?? 'No se pudo crear el proveedor.'
-      )
-    })
+      error: (respuesta) => {
+        this.guardando.set(false);
+        this.error.set(respuesta.error?.message ?? 'No se pudo crear el proveedor.');
+      }
+    });
   }
 
   updateProvider() {
@@ -48,10 +50,11 @@ export class ProveedorComponent implements OnInit{
 
     this.proveedoresService.updateProvider(cif, proveedor).subscribe({
       next: () => this.router.navigate(['/proveedores']),
-      error: (respuesta) => this.error.set(
-        respuesta.error?.message ?? 'No se pudo modificar el proveedor.'
-      )
-    })
+      error: (respuesta) => {
+        this.guardando.set(false);
+        this.error.set(respuesta.error?.message ?? 'No se pudo modificar el proveedor.');
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -61,8 +64,8 @@ export class ProveedorComponent implements OnInit{
       activity: new FormControl(''),
       address: new FormControl(''),
       city: new FormControl(''),
-      postalCode: new FormControl(''),
-      phone: new FormControl(''),
+      postalCode: new FormControl('', Validators.pattern(/^\d{5}$/)),
+      phone: new FormControl('', Validators.pattern(/^\d{9}$/)),
     })
     const cif = this.activatedRoute.snapshot.params['cif'];
     

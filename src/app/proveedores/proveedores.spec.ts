@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { Subject, of } from 'rxjs';
+import { vi, describe, expect, beforeEach } from 'vitest';
 
 import { Proveedores } from './proveedores';
 import { ProveedoresService } from '../proveedores';
@@ -48,11 +49,9 @@ describe('Proveedores', () => {
     expect(component).toBeTruthy();
   });
 
-  // Guarda contra el bug de zoneless: si el estado deja de ser reactivo,
-  // el componente recibe los datos pero la tabla nunca se pinta.
   it('debe pintar en el DOM los proveedores que llegan del servicio', async () => {
     const html = fixture.nativeElement as HTMLElement;
-    // El primer render ya ocurrió; los datos llegan DESPUÉS, como un HTTP real.
+
     respuesta$.next({ message: 'Ok', proveedores: [PROVEEDOR] });
     await fixture.whenStable();
 
@@ -61,6 +60,8 @@ describe('Proveedores', () => {
   });
 
   it('debe quitar del DOM la fila al eliminar', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    
     const html = fixture.nativeElement as HTMLElement;
     respuesta$.next({ message: 'Ok', proveedores: [PROVEEDOR] });
     await fixture.whenStable();
@@ -71,4 +72,16 @@ describe('Proveedores', () => {
     expect(html.querySelectorAll('tbody tr').length).toBe(0);
     expect(html.textContent).toContain('No hay proveedores');
   });
+
+  it('debe filtrar la tabla al escribir en el buscador', async () => {
+  const html = fixture.nativeElement as HTMLElement;
+  respuesta$.next({ message: 'Ok', proveedores: [PROVEEDOR] });
+  await fixture.whenStable();
+
+  component.busqueda.set('no-existe');
+  await fixture.whenStable();
+
+  expect(html.querySelectorAll('tbody tr').length).toBe(0);
+  expect(html.textContent).toContain('Sin resultados');
+});
 });

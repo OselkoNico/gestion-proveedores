@@ -1,23 +1,5 @@
 <div class="formulario-container">
-
-    <header class="header">
-        <h1 class="titulo">Gestión de Proveedores</h1>
-
-        <nav class="navegacion">
-            <a class="nav-enlace" routerLink="/">
-                Inicio
-            </a>
-
-            <a class="nav-enlace" routerLink="/crear">
-                Añadir
-            </a>
-
-            <a class="nav-enlace" routerLink="/proveedores">
-                Modificar / eliminar
-            </a>
-        </nav>
-    </header>
-
+    
     <main>
 
         @if (esModificacion()) {
@@ -32,32 +14,53 @@
             (ngSubmit)="guardar()"
         >
             <label for="cif">CIF</label>
-            <input id="cif" type="text" formControlName="cif">
+            <input id="cif" type="text" formControlName="cif" [readonly] = "esModificacion()">
+            @if (formFormulario.get('cif')?.touched && formFormulario.get('cif')?.invalid) {
+                <span class="error-campo">El CIF es obligatorio.</span>
+            }
 
             <label for="name">Nombre de la empresa</label>
             <input id="name" type="text" formControlName="name">
+            @if (formFormulario.get('name')?.touched && formFormulario.get('name')?.invalid) {
+                <span class="error-campo">El nombre de empresa es obligatorio.</span>
+            }
 
             <label for="activity">Actividad</label>
             <input id="activity" type="text" formControlName="activity">
+            @if (formFormulario.get('activity')?.touched && formFormulario.get('activity')?.invalid) {
+                <span class="error-campo">La actividad es obligatoria.</span>
+            }
 
             <label for="address">Dirección</label>
             <input id="address" type="text" formControlName="address">
+            @if (formFormulario.get('address')?.touched && formFormulario.get('address')?.invalid) {
+                <span class="error-campo">La dirección es obligatoria.</span>
+            }
 
             <label for="city">Ciudad</label>
             <input id="city" type="text" formControlName="city">
+            @if (formFormulario.get('city')?.touched && formFormulario.get('city')?.invalid) {
+                <span class="error-campo">La cuidad es obligatoria.</span>
+            }
 
             <label for="postalCode">Código postal</label>
             <input id="postalCode" type="text" formControlName="postalCode">
+            @if (formFormulario.get('postalCode')?.touched && formFormulario.get('postalCode')?.invalid) {
+                <span class="error-campo">El código postal debe tener 5 dígitos.</span>
+            }
 
             <label for="phone">Teléfono</label>
             <input id="phone" type="text" formControlName="phone">
+            @if (formFormulario.get('phone')?.touched && formFormulario.get('phone')?.invalid) {
+                <span class="error-campo">El número de teléfono debe contener 9 dígitos.</span>
+            }
 
             @if (error()) {
                 <p class="mensaje-error">{{ error() }}</p>
             }
 
-            <button type="submit" class="btn btn-principal">
-                {{ esModificacion() ? 'Modificar' : 'Añadir' }}
+            <button type="submit" class="btn btn-principal" [disabled]="guardando()">
+                {{ guardando() ? 'Guardando...' : (esModificacion() ? 'Modificar' : 'Añadir') }}
             </button>
         </form>
 

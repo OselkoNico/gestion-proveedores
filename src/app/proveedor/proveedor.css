@@ -76,3 +76,13 @@
     padding: 0.6rem 0.8rem;
     margin: 0.5rem 0;
 }
+
+.formulario input[readonly] {
+    background: #eef4f8;
+    color: #6b8296;
+}
+
+.error-campo {
+    color: #c0392b;
+    font-size: 13px;
+}
