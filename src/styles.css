@@ -1,3 +1,42 @@
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: #dcecf7;
+    border-bottom: 1px solid #c4ddeb;
+}
+
+.titulo {
+    margin: 0;
+    color: #285b7a;
+    font-size: 26px;
+}
+
+.navegacion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-enlace {
+    padding: 10px 16px;
+    color: #285b7a;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.nav-enlace:hover {
+    background: #c7dfed;
+    cursor: pointer;
+}
+
 .nav-enlace.activo {
     background: #c7dfed;
     font-weight: 600;
