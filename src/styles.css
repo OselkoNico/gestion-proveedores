@@ -2,3 +2,16 @@
     background: #c7dfed;
     font-weight: 600;
 }
+
+.usuario {
+    color: #285b7a;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.btn-salir {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}

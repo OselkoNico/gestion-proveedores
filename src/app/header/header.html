@@ -2,17 +2,35 @@
     <h1 class="titulo">Gestión de Proveedores</h1>
 
     <nav class="navegacion">
-        <a class="nav-enlace"
-        routerLink="/" 
-        routerLinkActive="activo"
-        [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+        <a class="nav-enlace" routerLink="/" routerLinkActive="activo"
+           [routerLinkActiveOptions]="{ exact: true }">
+            Inicio
+        </a>
 
-        <a class="nav-enlace"
-        routerLink="/crear"
-        routerLinkActive="activo">Añadir</a>
+        @if (authService.autenticado()) {
 
-        <a class="nav-enlace"
-        routerLink="/proveedores"
-        routerLinkActive="activo">Modificar / eliminar</a>
+            <a class="nav-enlace" routerLink="/proveedores" routerLinkActive="activo">
+                Proveedores
+            </a>
+
+            @if (authService.esAdmin()) {
+                <a class="nav-enlace" routerLink="/crear" routerLinkActive="activo">
+                    Añadir
+                </a>
+            }
+
+            <span class="usuario">{{ authService.usuario()?.email }}</span>
+
+            <button class="nav-enlace btn-salir" (click)="salir()">
+                Salir
+            </button>
+
+        } @else {
+
+            <a class="nav-enlace" routerLink="/login" routerLinkActive="activo">
+                Iniciar sesión
+            </a>
+
+        }
     </nav>
 </header>

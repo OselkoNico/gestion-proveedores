@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ProveedoresService } from '../proveedores';
 import { Proveedor } from '../models/proveedor';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth';
 
 @Component({
   selector: 'app-proveedores',
@@ -22,7 +23,7 @@ export class Proveedores implements OnInit {
 
   private temporizador?: ReturnType<typeof setTimeout>;
 
-  constructor(private proveedoresService: ProveedoresService, private router: Router) {}
+  constructor(private proveedoresService: ProveedoresService, private router: Router, public authService: AuthService) {}
 
   cargarProveedores() {
     this.cargando.set(true);
