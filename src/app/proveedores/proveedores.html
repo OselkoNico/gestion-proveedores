@@ -48,7 +48,7 @@
                             <td>{{ proveedor.phone }}</td>
 
                             @if (authService.esAdmin()) {
-                                <td>
+                                <td class="acciones">
                                     <button
                                         class="btn btn-modificar"
                                         (click)="modificarProveedor(proveedor.cif)">
