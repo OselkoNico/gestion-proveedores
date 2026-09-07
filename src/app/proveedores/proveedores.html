@@ -29,7 +29,10 @@
                         <th>Ciudad</th>
                         <th>Código postal</th>
                         <th>Teléfono</th>
-                        <th>Acciones</th>
+
+                        @if (authService.esAdmin()) {
+                            <th>Acciones</th>
+                        }
                     </tr>
                 </thead>
 
@@ -44,19 +47,21 @@
                             <td>{{ proveedor.postalCode }}</td>
                             <td>{{ proveedor.phone }}</td>
 
-                            <td>
-                                <button
-                                    class="btn btn-modificar"
-                                    (click)="modificarProveedor(proveedor.cif)">
-                                    Modificar
-                                </button>
+                            @if (authService.esAdmin()) {
+                                <td>
+                                    <button
+                                        class="btn btn-modificar"
+                                        (click)="modificarProveedor(proveedor.cif)">
+                                        Modificar
+                                    </button>
 
-                                <button
-                                    class="btn btn-eliminar"
-                                    (click)="eliminarProveedor(proveedor.cif)">
-                                    Eliminar
-                                </button>
-                            </td>
+                                    <button
+                                        class="btn btn-eliminar"
+                                        (click)="eliminarProveedor(proveedor.cif)">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            }
                         </tr>
                     }
                 </tbody>
