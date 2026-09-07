@@ -1,9 +1,8 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProveedoresService } from '../proveedores';
 import { Proveedor } from '../models/proveedor';
 import { Router } from '@angular/router';
-import { TestBed } from '@angular/core/testing';
 
 @Component({
   selector: 'app-proveedores',
@@ -11,60 +10,82 @@ import { TestBed } from '@angular/core/testing';
   templateUrl: './proveedores.html',
   styleUrl: './proveedores.css',
 })
-export class Proveedores implements OnInit{
+export class Proveedores implements OnInit {
 
   proveedores = signal<Proveedor[]>([]);
   error = signal('');
   cargando = signal(true);
   busqueda = signal('');
+  pagina = signal(1);
+  totalPaginas = signal(0);
+  total = signal(0);
 
-  proveedoresFiltrados = computed(() => {
-    const texto = this.busqueda().toLowerCase().trim();
+  private temporizador?: ReturnType<typeof setTimeout>;
 
-    if(!texto) {
-      return this.proveedores();
-    }
+  constructor(private proveedoresService: ProveedoresService, private router: Router) {}
 
-    return this.proveedores().filter(proveedor =>
-      proveedor.name.toLowerCase().includes(texto) ||
-      proveedor.cif.toLowerCase().includes(texto)
-    );
-  });
+  cargarProveedores() {
+    this.cargando.set(true);
 
-constructor(private proveedoresService: ProveedoresService, private router: Router) {}
-
-modificarProveedor(cif: string) {
-  this.router.navigate(['modificar', cif])
-}
-
-eliminarProveedor(cif: string) {
-  if(!confirm('¿Seguro que quieres eliminar este proveedor?')) {
-    return;
+    this.proveedoresService.getProviders(this.pagina(), this.busqueda()).subscribe({
+      next: (respuesta) => {
+        this.proveedores.set(respuesta.proveedores);
+        this.total.set(respuesta.total);
+        this.totalPaginas.set(respuesta.totalPages);
+        this.cargando.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudo conectar con el servidor.');
+        this.cargando.set(false);
+      }
+    });
   }
 
-  this.error.set('');
+  buscar(texto: string) {
+    this.busqueda.set(texto);
 
-  this.proveedoresService.deleteProvider(cif).subscribe({
-    next: () => {
-      this.proveedores.update(
-        proveedores => proveedores.filter(proveedor => proveedor.cif !== cif)
-      );
-    },
-    error: () => this.error.set('No se pudo eliminar el proveedor.')
-  });
-}
+    clearTimeout(this.temporizador);
 
-ngOnInit(): void {
-  this.proveedoresService.getProviders().subscribe({
-    next: (respuesta) => {
-      this.proveedores.set(respuesta.proveedores);
-      this.cargando.set(false);
-    },
-    error: () => {
-      this.error.set('No se pudo conectar con el servidor.');
-      this.cargando.set(false);
+    this.temporizador = setTimeout(() => {
+      this.pagina.set(1);
+      this.cargarProveedores();
+    }, 300);
+  }
+
+  irAPagina(nuevaPagina: number) {
+    if (nuevaPagina < 1 || nuevaPagina > this.totalPaginas()) {
+      return;
     }
-  });
-}
+
+    this.pagina.set(nuevaPagina);
+    this.cargarProveedores();
+  }
+
+  modificarProveedor(cif: string) {
+    this.router.navigate(['modificar', cif]);
+  }
+
+  eliminarProveedor(cif: string) {
+    if (!confirm('¿Seguro que quieres eliminar este proveedor?')) {
+      return;
+    }
+
+    this.error.set('');
+
+    this.proveedoresService.deleteProvider(cif).subscribe({
+      next: () => {
+        if (this.proveedores().length === 1 && this.pagina() > 1) {
+          this.pagina.update(pagina => pagina - 1);
+        }
+
+        this.cargarProveedores();
+      },
+      error: () => this.error.set('No se pudo eliminar el proveedor.')
+    });
+  }
+
+  ngOnInit(): void {
+    this.cargarProveedores();
+  }
 
 }
