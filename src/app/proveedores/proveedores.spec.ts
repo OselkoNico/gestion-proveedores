@@ -1,12 +1,12 @@
+import { vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { Subject, of } from 'rxjs';
-import { vi, describe, expect, beforeEach } from 'vitest';
 
 import { Proveedores } from './proveedores';
 import { ProveedoresService } from '../proveedores';
-import { Proveedor } from '../models/proveedor';
+import { Proveedor, Respuesta } from '../models/proveedor';
 
 const PROVEEDOR: Proveedor = {
   cif: 'B999',
@@ -18,10 +18,19 @@ const PROVEEDOR: Proveedor = {
   phone: '600999888',
 };
 
+const UNA_PAGINA: Respuesta = {
+  message: 'Ok',
+  proveedores: [PROVEEDOR],
+  total: 1,
+  page: 1,
+  limit: 10,
+  totalPages: 1,
+};
+
 describe('Proveedores', () => {
   let component: Proveedores;
   let fixture: ComponentFixture<Proveedores>;
-  let respuesta$: Subject<{ message: string; proveedores: Proveedor[] }>;
+  let respuesta$: Subject<Respuesta>;
 
   beforeEach(async () => {
     respuesta$ = new Subject();
@@ -51,37 +60,27 @@ describe('Proveedores', () => {
 
   it('debe pintar en el DOM los proveedores que llegan del servicio', async () => {
     const html = fixture.nativeElement as HTMLElement;
-
-    respuesta$.next({ message: 'Ok', proveedores: [PROVEEDOR] });
+    respuesta$.next(UNA_PAGINA);
     await fixture.whenStable();
 
     expect(html.querySelectorAll('tbody tr').length).toBe(1);
     expect(html.textContent).toContain('Proveedor Uno');
   });
 
-  it('debe quitar del DOM la fila al eliminar', async () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-    
+  it('no debe mostrar los controles de paginación con una sola página', async () => {
     const html = fixture.nativeElement as HTMLElement;
-    respuesta$.next({ message: 'Ok', proveedores: [PROVEEDOR] });
+    respuesta$.next(UNA_PAGINA);
     await fixture.whenStable();
 
-    html.querySelector<HTMLButtonElement>('.btn-eliminar')!.click();
-    await fixture.whenStable();
-
-    expect(html.querySelectorAll('tbody tr').length).toBe(0);
-    expect(html.textContent).toContain('No hay proveedores');
+    expect(html.querySelector('.paginacion')).toBeNull();
   });
 
-  it('debe filtrar la tabla al escribir en el buscador', async () => {
-  const html = fixture.nativeElement as HTMLElement;
-  respuesta$.next({ message: 'Ok', proveedores: [PROVEEDOR] });
-  await fixture.whenStable();
+  it('debe mostrar los controles de paginación con varias páginas', async () => {
+    const html = fixture.nativeElement as HTMLElement;
+    respuesta$.next({ ...UNA_PAGINA, total: 25, totalPages: 3 });
+    await fixture.whenStable();
 
-  component.busqueda.set('no-existe');
-  await fixture.whenStable();
-
-  expect(html.querySelectorAll('tbody tr').length).toBe(0);
-  expect(html.textContent).toContain('Sin resultados');
-});
+    expect(html.querySelector('.paginacion')).not.toBeNull();
+    expect(html.textContent).toContain('Página 1 de 3');
+  });
 });

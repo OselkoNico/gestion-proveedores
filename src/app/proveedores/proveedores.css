@@ -123,3 +123,22 @@
     border-color: #7bb3d1;
     outline: none;
 }
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 20px auto 0;
+}
+
+.paginacion-info {
+    color: #285b7a;
+    font-size: 14px;
+}
+
+.paginacion .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

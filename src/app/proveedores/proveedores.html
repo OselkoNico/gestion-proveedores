@@ -6,71 +6,91 @@
             <p class="mensaje-error">{{ error() }}</p>
         }
 
+        <input
+            class="buscador"
+            type="text"
+            placeholder="Buscar por nombre o CIF"
+            [ngModel]="busqueda()"
+            (ngModelChange)="buscar($event)">
+
         @if (cargando()) {
 
             <p class="mensaje-cargando">Cargando proveedores...</p>
 
         } @else if (proveedores().length > 0) {
 
-            <input
-                class="buscador"
-                type="text"
-                placeholder="Buscar por nombre o CIF"
-                [(ngModel)]="busqueda">
+            <table class="tabla-proveedores">
+                <thead>
+                    <tr>
+                        <th>CIF</th>
+                        <th>Nombre de empresa</th>
+                        <th>Actividad</th>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                        <th>Código postal</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
 
-            @if (proveedoresFiltrados().length > 0) {
-
-                <table class="tabla-proveedores">
-                    <thead>
+                <tbody>
+                    @for (proveedor of proveedores(); track proveedor.cif) {
                         <tr>
-                            <th>CIF</th>
-                            <th>Nombre de empresa</th>
-                            <th>Actividad</th>
-                            <th>Dirección</th>
-                            <th>Ciudad</th>
-                            <th>Código postal</th>
-                            <th>Teléfono</th>
-                            <th>Acciones</th>
+                            <td>{{ proveedor.cif }}</td>
+                            <td>{{ proveedor.name }}</td>
+                            <td>{{ proveedor.activity }}</td>
+                            <td>{{ proveedor.address }}</td>
+                            <td>{{ proveedor.city }}</td>
+                            <td>{{ proveedor.postalCode }}</td>
+                            <td>{{ proveedor.phone }}</td>
+
+                            <td>
+                                <button
+                                    class="btn btn-modificar"
+                                    (click)="modificarProveedor(proveedor.cif)">
+                                    Modificar
+                                </button>
+
+                                <button
+                                    class="btn btn-eliminar"
+                                    (click)="eliminarProveedor(proveedor.cif)">
+                                    Eliminar
+                                </button>
+                            </td>
                         </tr>
-                    </thead>
+                    }
+                </tbody>
+            </table>
 
-                    <tbody>
-                        @for (proveedor of proveedoresFiltrados(); track proveedor.cif) {
-                            <tr>
-                                <td>{{ proveedor.cif }}</td>
-                                <td>{{ proveedor.name }}</td>
-                                <td>{{ proveedor.activity }}</td>
-                                <td>{{ proveedor.address }}</td>
-                                <td>{{ proveedor.city }}</td>
-                                <td>{{ proveedor.postalCode }}</td>
-                                <td>{{ proveedor.phone }}</td>
+            @if (totalPaginas() > 1) {
+                <div class="paginacion">
+                    <button
+                        class="btn"
+                        (click)="irAPagina(pagina() - 1)"
+                        [disabled]="pagina() === 1">
+                        Anterior
+                    </button>
 
-                                <td>
-                                    <button
-                                        class="btn btn-modificar"
-                                        (click)="modificarProveedor(proveedor.cif)">
-                                        Modificar
-                                    </button>
+                    <span class="paginacion-info">
+                        Página {{ pagina() }} de {{ totalPaginas() }}
+                        &mdash; {{ total() }} proveedores
+                    </span>
 
-                                    <button
-                                        class="btn btn-eliminar"
-                                        (click)="eliminarProveedor(proveedor.cif)">
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-
-            } @else {
-
-                <div class="sin-proveedores">
-                    <h2>Sin resultados</h2>
-                    <p>Ningún proveedor coincide con «{{ busqueda() }}».</p>
+                    <button
+                        class="btn"
+                        (click)="irAPagina(pagina() + 1)"
+                        [disabled]="pagina() === totalPaginas()">
+                        Siguiente
+                    </button>
                 </div>
-
             }
+
+        } @else if (busqueda()) {
+
+            <div class="sin-proveedores">
+                <h2>Sin resultados</h2>
+                <p>Ningún proveedor coincide con «{{ busqueda() }}».</p>
+            </div>
 
         } @else if (!error()) {
 
