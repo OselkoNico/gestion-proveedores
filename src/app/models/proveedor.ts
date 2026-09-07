@@ -11,6 +11,10 @@ export interface Proveedor{
 export interface Respuesta{
   message: string;
   proveedores: Proveedor[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface RespuestaProveedor {

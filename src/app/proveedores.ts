@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { 
   Proveedor, 
@@ -18,8 +18,13 @@ export class ProveedoresService {
 
   constructor(private http: HttpClient) {}
 
-  getProviders() {
-    return this.http.get<Respuesta>(this.apiUrl);
+  getProviders(page: number, search: string) {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('limit', 10)
+      .set('search', search);
+
+    return this.http.get<Respuesta>(this.apiUrl, { params });
   }
 
   getProviderByCif(cif: string) {
