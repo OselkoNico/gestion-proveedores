@@ -1,0 +1,75 @@
+.auth-container {
+    min-height: 100vh;
+    padding: 60px 20px;
+    background: #f3f8fc;
+    color: #26384a;
+}
+
+.formulario-titulo {
+    max-width: 420px;
+    margin: 0 auto 30px;
+    color: #285b7a;
+    text-align: center;
+    font-size: 32px;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 35px;
+    background: #ffffff;
+    border: 1px solid #d4e5ef;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(45, 90, 120, 0.08);
+}
+
+.formulario label {
+    margin-top: 8px;
+    color: #285b7a;
+}
+
+.formulario input {
+    padding: 10px 12px;
+    border: 1px solid #d4e5ef;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.error-campo {
+    color: #c0392b;
+    font-size: 13px;
+}
+
+.mensaje-error {
+    margin: 10px 0 0;
+    color: #c0392b;
+}
+
+.btn-principal {
+    margin-top: 20px;
+    padding: 12px;
+    background: #285b7a;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.btn-principal:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.auth-enlace {
+    max-width: 420px;
+    margin: 20px auto 0;
+    text-align: center;
+}
+
+.auth-enlace a {
+    color: #285b7a;
+}
